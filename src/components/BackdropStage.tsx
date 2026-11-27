@@ -11,16 +11,18 @@ interface StageVisual {
   imageClass: string;
 }
 
+const BASE = import.meta.env.BASE_URL;
+
 const STAGE_VISUALS: Record<StoryStage, StageVisual> = {
   intro: {
-    src: '/src/assets/images/marie_intro_sakura_1795788730134.jpg',
+    src: `${BASE}src/assets/images/marie_intro_sakura_1795788730134.jpg`,
     alt: 'Cortinas iluminadas por la luz de la mañana con pétalos de cerezo flotando',
     fallbackGradient: 'bg-gradient-to-br from-[#FBF6F4] via-[#F5E4E8] to-[#EBD8DF]',
     scrimClass: 'bg-gradient-to-b from-[#FAF5F4]/55 via-[#FAF5F4]/40 to-[#F3E5E9]/70',
     imageClass: 'object-cover object-center',
   },
   itazura: {
-    src: '/src/assets/images/itazura_anime_bg_1795788730553.jpg',
+    src: `${BASE}src/assets/images/itazura_anime_bg_1795788730553.jpg`,
     alt: 'Escena romántica estilo anime clásico bajo un paraguas con pétalos de sakura y lluvia suave al atardecer',
     fallbackGradient: 'bg-gradient-to-br from-[#191D3A] via-[#2B2544] to-[#4A2538]',
     scrimClass:
@@ -28,7 +30,7 @@ const STAGE_VISUALS: Record<StoryStage, StageVisual> = {
     imageClass: 'object-cover object-[52%_32%] lg:object-center',
   },
   hate_confirm: {
-    src: '/src/assets/images/itazura_anime_bg_1795788730553.jpg',
+    src: `${BASE}src/assets/images/itazura_anime_bg_1795788730553.jpg`,
     alt: 'Escena nocturna estilo anime bajo faroles cálidos y cerezos en flor',
     fallbackGradient: 'bg-gradient-to-br from-[#1B1224] via-[#2F1930] to-[#481B2C]',
     scrimClass:
@@ -36,7 +38,7 @@ const STAGE_VISUALS: Record<StoryStage, StageVisual> = {
     imageClass: 'object-cover object-[52%_32%] lg:object-center scale-[1.03]',
   },
   farewell: {
-    src: '/src/assets/images/marie_farewell_starlight_1795788730319.jpg',
+    src: `${BASE}src/assets/images/marie_farewell_starlight_1795788730319.jpg`,
     alt: 'Cielo estrellado nocturno sobre luces cálidas de la ciudad y flores de cerezo en un balcón',
     fallbackGradient: 'bg-gradient-to-br from-[#0F1326] via-[#261934] to-[#441E32]',
     scrimClass: 'bg-gradient-to-t from-[#0D0A14]/82 via-[#120D1A]/52 to-[#0D0A14]/45',
