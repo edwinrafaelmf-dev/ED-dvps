@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  html,
+  body {
+    font-family: var(--font-sans);
+    background-color: #161118;
+    color: #fffdfc;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  button,
+  a,
+  select {
+    touch-action: manipulation;
+  }
+
+  h1,
+  h2,
+  .font-display {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+}
+
+@keyframes petal-fall {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.78;
+  }
+  85% {
+    opacity: 0.65;
+  }
+  100% {
+    transform: translate3d(var(--drift-x, 70px), 112vh, 0) rotate(var(--spin-deg, 260deg));
+    opacity: 0;
+  }
+}
+
+.sakura-petal {
+  animation: petal-fall var(--fall-duration, 14s) linear var(--fall-delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sakura-petal {
+    animation: none;
+    display: none;
+  }
+}

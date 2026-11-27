@@ -1,0 +1,102 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global safety net: deny everything by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reusable hardened helpers
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isBootstrappedAdmin() {
+      return isVerified() && request.auth.token.email == 'edwinrafaelmf@gmail.com';
+    }
+
+    function isOwner(ownerId) {
+      return isSignedIn() && request.auth.uid == ownerId;
+    }
+
+    function isValidMemory(data) {
+      return data.keys().hasAll([
+        'ownerId',
+        'authorName',
+        'replyMessage',
+        'noAttemptsCount',
+        'favoriteMoment',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'ownerId',
+        'authorName',
+        'replyMessage',
+        'noAttemptsCount',
+        'favoriteMoment',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      isValidId(data.ownerId) &&
+      data.authorName is string && data.authorName.size() >= 1 && data.authorName.size() <= 80 &&
+      data.replyMessage is string && data.replyMessage.size() >= 1 && data.replyMessage.size() <= 400 &&
+      data.noAttemptsCount is number && data.noAttemptsCount >= 0 && data.noAttemptsCount <= 10000 &&
+      data.favoriteMoment is string && data.favoriteMoment in ['itazura', 'te_odio', 'me_encantas'] &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    match /memories/{memoryId} {
+      allow get: if isSignedIn() && isValidId(memoryId) && (
+        isOwner(existing().ownerId) || isBootstrappedAdmin()
+      );
+
+      allow list: if isSignedIn() && (
+        resource.data.ownerId == request.auth.uid || isBootstrappedAdmin()
+      );
+
+      allow create: if isVerified() &&
+        isValidId(memoryId) &&
+        isValidMemory(incoming()) &&
+        incoming().ownerId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isVerified() &&
+        isValidId(memoryId) &&
+        isValidMemory(incoming()) &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        (isOwner(existing().ownerId) || isBootstrappedAdmin()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'replyMessage',
+          'favoriteMoment',
+          'updatedAt'
+        ]);
+
+      allow delete: if isVerified() && isValidId(memoryId) && (
+        isOwner(existing().ownerId) || isBootstrappedAdmin()
+      );
+    }
+  }
+}

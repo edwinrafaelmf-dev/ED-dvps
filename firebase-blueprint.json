@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "Memory": {
+      "title": "Memory",
+      "description": "A saved romantic response and interaction record left by Marie (or Edwin) at the end of the experience.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the authenticated user who created this memory.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Display name of the author.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "replyMessage": {
+          "type": "string",
+          "description": "Heartfelt message written at the end of the experience.",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "noAttemptsCount": {
+          "type": "number",
+          "description": "Total number of times the evasive No button was attempted across all stages."
+        },
+        "favoriteMoment": {
+          "type": "string",
+          "description": "Selected favorite stage from the experience.",
+          "enum": ["itazura", "te_odio", "me_encantas"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the memory was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the memory was last updated."
+        }
+      },
+      "required": [
+        "ownerId",
+        "authorName",
+        "replyMessage",
+        "noAttemptsCount",
+        "favoriteMoment",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/memories/{memoryId}": {
+      "schema": {
+        "$ref": "#/entities/Memory"
+      },
+      "description": "Stores saved responses and interaction summaries created by authenticated users."
+    }
+  }
+}
